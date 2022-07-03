@@ -6,6 +6,8 @@ import click
 import papermill as pm
 from sklearn_evaluation import NotebookIntrospector
 
+from nbsnapshot.exceptions import SnapshotTestFailure
+
 
 def _remove_non_supported_types(record):
     clean = dict()
@@ -121,7 +123,9 @@ def _load_json(path):
 def main(path_to_notebook: str, run: bool = False):
     if run:
         click.echo('Running notebook...')
-        pm.execute_notebook(path_to_notebook, path_to_notebook)
+        pm.execute_notebook(path_to_notebook,
+                            path_to_notebook,
+                            progress_bar=False)
 
     path_to_history = Path(path_to_notebook).with_suffix('.json')
 
@@ -142,4 +146,4 @@ def main(path_to_notebook: str, run: bool = False):
     # history, perhaps add a nother command "nbsnapshot" that only adds the
     # current values to the history without testing?
     if not success:
-        raise click.exceptions.ClickException('Some tests failed.')
+        raise SnapshotTestFailure('Some tests failed.')
