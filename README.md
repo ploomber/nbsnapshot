@@ -19,10 +19,13 @@ First, [tag some cells](https://papermill.readthedocs.io/en/latest/usage-paramet
 Or, get a sample notebook:
 
 ```sh
+curl -O https://raw.githubusercontent.com/edublancas/nbsnapshot/main/examples/normal.ipynb
 ```
 
-Then, run the notebook and test it:
+Then, run the notebook and test it (pass `--run` to run the notebook before doing the snapshot test):
 
 ```sh
-nbsnapshot test path/to/notebook.ipynb --run
+nbsnapshot test normal.ipynb --run
 ```
+
+*Note:* You'll need to run the command a few times to start generating the history. If you want to fail the test, modify the notebook and add replace the cell that contains `np.random.normal()` with the number `100`.
