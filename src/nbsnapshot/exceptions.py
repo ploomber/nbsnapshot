@@ -1,0 +1,2 @@
+class SnapshotTestFailed(Exception):
+    pass

@@ -13,9 +13,16 @@ with open('src/nbsnapshot/__init__.py', 'rb') as f:
         ast.literal_eval(
             _version_re.search(f.read().decode('utf-8')).group(1)))
 
-REQUIRES = []
+REQUIRES = [
+    'click',
+    'papermill',
+]
 
-DEV = []
+DEV = [
+    'pytest',
+    'nbformat',
+    'ipykernel',
+]
 
 setup(
     name='nbsnapshot',
@@ -36,6 +43,6 @@ setup(
         'dev': DEV,
     },
     entry_points={
-        # 'console_scripts': ['nbsnapshot=nbsnapshot.cli:cli'],
+        'console_scripts': ['nbsnapshot=nbsnapshot.cli:cli'],
     },
 )
