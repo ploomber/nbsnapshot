@@ -16,6 +16,7 @@ with open('src/nbsnapshot/__init__.py', 'rb') as f:
 REQUIRES = [
     'click',
     'papermill',
+    'sklearn-evaluation',
 ]
 
 DEV = [

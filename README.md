@@ -25,6 +25,10 @@ curl -O https://raw.githubusercontent.com/edublancas/nbsnapshot/main/examples/no
 Then, run the notebook and test it (pass `--run` to run the notebook before doing the snapshot test):
 
 ```sh
+# install dependencies
+pip install matplotlib numpy pandas
+
+# run test
 nbsnapshot test normal.ipynb --run
 ```
 
