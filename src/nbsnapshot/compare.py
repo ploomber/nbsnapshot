@@ -118,24 +118,6 @@ def _load_json(path):
     return json.loads(Path(path).read_text())
 
 
-def get_benchmark():
-    """Computes benchmark using the notebook's history
-    """
-    pass
-
-
-def generate_report():
-    """Generates a text report with the differentes
-    """
-    pass
-
-
-def compare(path_to_notebook: str, path_to_history: str):
-    """Compares a notebook with the history
-    """
-    pass
-
-
 def main(path_to_notebook: str, run: bool = False):
     if run:
         click.echo('Running notebook...')
