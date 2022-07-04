@@ -1,6 +1,6 @@
 # nbsnapshot
 
-CLI for doing snapshot testing on Jupyter notebooks.
+CLI for doing snapshot testing on Jupyter notebooks. [Blog post here.](https://ploomber.io/blog/snapshot-testing/)
 
 ![header](header.png)
 
