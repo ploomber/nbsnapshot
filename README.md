@@ -2,6 +2,8 @@
 
 CLI for doing snapshot testing on Jupyter notebooks.
 
+![header](header.png)
+
 ## Install
 
 ```sh
