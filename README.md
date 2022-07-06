@@ -1,5 +1,8 @@
 # nbsnapshot
 
+> **Note**
+> `nbsnapshot` is in an early stage of development. Join our [community](https://ploomber.io/community) to submit your feedback and follow me on [Twiter](https://twitter.com/intent/user?screen_name=edublancas) to get the latest news.
+
 CLI for doing snapshot testing on Jupyter notebooks. [Blog post here.](https://ploomber.io/blog/snapshot-testing/)
 
 ![header](header.png)
