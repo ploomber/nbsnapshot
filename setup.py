@@ -24,6 +24,7 @@ DEV = [
     'flake8',
     'nbformat',
     'ipykernel',
+    'invoke',
 ]
 
 setup(
