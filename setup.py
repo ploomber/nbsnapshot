@@ -21,6 +21,7 @@ REQUIRES = [
 
 DEV = [
     'pytest',
+    'flake8',
     'nbformat',
     'ipykernel',
 ]
