@@ -74,9 +74,8 @@ class History:
                 click.echo(
                     f'Added {key!r} to history, 1 more needed for testing...')
             else:
-                click.echo(
-                    f'Added {key!r} to history, next call will start testing...'
-                )
+                click.echo(f'Added {key!r} to history, next call '
+                           'will start testing...')
 
             # skip the rest of the function
             return True
