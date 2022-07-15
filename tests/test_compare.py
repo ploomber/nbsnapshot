@@ -64,16 +64,16 @@ def test_compare_appends_to_history(tmp_empty):
 @pytest.mark.parametrize('source, error', [
     [
         '100 + 100',
-        ("Test for cell 'first' failed: Current value is too high "
-         "(200), expected a value between 2.0 and 2.0")
+        ("Testing 'first' - FAIL! Value is too high "
+         "(200), expected one between 2.00 and 2.00")
     ],
     [
         '-100 - 100',
-        ("Test for cell 'first' failed: Current value is too low "
-         "(-200), expected a value between 2.0 and 2.0")
+        ("Testing 'first' - FAIL! Value is too low "
+         "(-200), expected one between 2.00 and 2.00")
     ],
 ])
-def test_compare_raises_error_if_deviates(tmp_empty, source, error):
+def test_compare_raises_error_if_deviates(tmp_empty, source, error, capsys):
     _make_notebook_with_cells([
         ('1 + 1', 'first'),
         ('2 + 2', 'second'),
@@ -88,10 +88,12 @@ def test_compare_raises_error_if_deviates(tmp_empty, source, error):
         ('2 + 2', 'second'),
     ], 'nb')
 
-    with pytest.raises(exceptions.SnapshotTestFailed) as excinfo:
+    with pytest.raises(exceptions.SnapshotTestFailure) as excinfo:
         compare.main('nb.ipynb')
 
-    assert error in str(excinfo.value)
+    captured = capsys.readouterr()
+    assert error in captured.out
+    assert 'Some tests failed.' == str(excinfo.value)
 
 
 @pytest.mark.parametrize('cells, expected', [
