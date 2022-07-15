@@ -10,7 +10,7 @@ CLI for doing snapshot testing on Jupyter notebooks. [Blog post here.](https://p
 ## Install
 
 ```sh
-pip install git+https://github.com/ploomber/nbsnapshot
+pip install nbsnapshot
 ```
 
 ## Example
