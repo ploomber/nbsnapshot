@@ -1,27 +1,8 @@
-import json
-from pathlib import Path
-
 import pytest
-import nbformat
-import papermill as pm
 
 from nbsnapshot import compare, exceptions
 
-
-def _load_json(path):
-    return json.loads(Path(path).read_text())
-
-
-def _new_cell(source, tag):
-    return nbformat.v4.new_code_cell(source=source, metadata=dict(tags=[tag]))
-
-
-def _make_notebook_with_cells(cells, name):
-    nb = nbformat.v4.new_notebook()
-    nb.cells = [_new_cell(source, tag) for source, tag in cells]
-    path = f'{name}.ipynb'
-    nbformat.write(nb, path)
-    pm.execute_notebook(path, path, kernel_name='python3')
+from conftest import _make_notebook_with_cells, _load_json
 
 
 def test_compare_creates_history(tmp_empty):

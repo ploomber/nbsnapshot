@@ -1,6 +1,9 @@
+import json
 import os
 from pathlib import Path
 
+import papermill as pm
+import nbformat
 import pytest
 
 
@@ -14,3 +17,19 @@ def tmp_empty(tmp_path):
     os.chdir(str(tmp_path))
     yield str(Path(tmp_path).resolve())
     os.chdir(old)
+
+
+def _load_json(path):
+    return json.loads(Path(path).read_text())
+
+
+def _new_cell(source, tag):
+    return nbformat.v4.new_code_cell(source=source, metadata=dict(tags=[tag]))
+
+
+def _make_notebook_with_cells(cells, name):
+    nb = nbformat.v4.new_notebook()
+    nb.cells = [_new_cell(source, tag) for source, tag in cells]
+    path = f'{name}.ipynb'
+    nbformat.write(nb, path)
+    pm.execute_notebook(path, path, kernel_name='python3')
