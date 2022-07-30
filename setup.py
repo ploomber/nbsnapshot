@@ -16,7 +16,7 @@ with open('src/nbsnapshot/__init__.py', 'rb') as f:
 REQUIRES = [
     'click',
     'papermill',
-    # wee need it to use papermill
+    # we need it to use papermill
     'ipykernel',
     'sklearn-evaluation',
 ]

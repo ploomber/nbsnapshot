@@ -17,6 +17,8 @@ pip install nbsnapshot
 
 See [examples/example.ipynb](examples/example.ipynb)
 
+For an example project using nbsnapshot and GitHub Actions, [see here.](https://github.com/ploomber/notebooks-ci)
+
 ## Usage
 
 First, [tag some cells](https://papermill.readthedocs.io/en/latest/usage-parameterize.html). 
