@@ -1,10 +1,14 @@
+import base64
+from io import BytesIO
 import json
 from pathlib import Path
 import statistics
+from collections.abc import Mapping
 
 import click
 import papermill as pm
 from sklearn_evaluation import NotebookIntrospector
+from sklearn_evaluation.nb.NotebookIntrospector import _safe_literal_eval
 
 from nbsnapshot.exceptions import SnapshotTestFailure
 
@@ -16,19 +20,78 @@ def _remove_non_supported_types(record):
     for key, value in record.items():
         if isinstance(value, (int, float, bool)):
             clean[key] = value
+        elif isinstance(value, Image):
+            clean[key] = value.to_json_serializable()
         else:
             show_warning = True
 
     if show_warning:
-        click.echo('Got unsupported data type, ignoring... '
-                   '(only int, float and bool are supported)')
+        click.echo(f'Got unsupported data type ({type(value).__name__}), '
+                   'ignoring... (only int, float and bool are supported)')
 
     return clean
+
+
+def _str2arr(data):
+    from PIL import Image
+    import numpy as np
+
+    bytes_ = base64.b64decode(data)
+    image = Image.open(BytesIO(bytes_))
+    return np.array(image, dtype=np.float64)
+
+
+def _mean_squared_error(image0, image1):
+    import numpy as np
+    return np.mean((image0 - image1)**2, dtype=np.float64)
+
+
+def _compare_images(arrs):
+    for image0, image1 in zip(arrs, arrs[1:]):
+        yield _mean_squared_error(image0, image1)
+
+
+def _can_test(stored, key, is_number):
+    minimum = 3 if is_number else 2
+    # we need at least two observations to compute standard deviation
+    # plus the observation to compare
+    len_ = len(stored)
+
+    # TODO: add a CLI argument to control the minimum observations
+    # to start testing
+    if len_ < minimum:
+        needed = (minimum - 1) - len_
+        if needed:
+            click.echo(f'Added {key!r} to history, {needed} more '
+                       'needed for testing...')
+        else:
+            click.echo(f'Added {key!r} to history, next call '
+                       'will start testing...')
+
+        # skip the rest of the function
+        return False
+    else:
+        return True
+
+
+def _equal_sizes(arrs, key):
+    shapes = set(arr.shape for arr in arrs)
+    same_size = len(shapes) == 1
+
+    if same_size:
+        return True
+    else:
+        click.secho(
+            f'Testing {key!r} - FAIL! Images '
+            f'with multiple sizes: {shapes}',
+            fg='red')
+        return False
 
 
 # NOTE: we could store the history as metadata in the same ipynb
 # this could even allow us to plot the history below each cell
 class History:
+
     def __init__(self, path):
         if not path.exists():
             path.write_text(json.dumps([]))
@@ -60,29 +123,53 @@ class History:
     def __len__(self):
         return len(self._data)
 
-    def compare(self, key):
-        stored = self[key]
+    def compare(self, key, current):
+        stored = self[key] + [current]
 
-        # we need at least two observations to compute standard deviation
-        # plus the observation to compare
-        len_ = len(stored)
-
-        # TODO: add a CLI argument to control the minimum observations
-        # to start testing
-        if len_ < 3:
-            if 2 - len_:
-                click.echo(
-                    f'Added {key!r} to history, 1 more needed for testing...')
-            else:
-                click.echo(f'Added {key!r} to history, next call '
-                           'will start testing...')
-
-            # skip the rest of the function
+        # no history
+        if not len(stored):
             return True
 
-        # TODO: add a comparing function depending on the type
-        # int/float and bool
+        if isinstance(stored[0], (int, float)):
+            is_number = True
+        elif isinstance(stored[0], Mapping):
+            is_number = False
+        else:
+            click.secho(
+                'Got unrecognized type of '
+                f'data: {type(stored[0]).__name__}, ignoring...',
+                fg='yellow')
 
+            return True
+
+        # check if we can test - numbers need 3, image need 2 obs
+        can_test = _can_test(stored, key, is_number)
+
+        if can_test:
+            if is_number:
+                return self._compare_numeric(stored, key)
+            else:
+                return self._compare_image(stored, key)
+        else:
+            return True
+
+    def _compare_image(self, stored, key):
+        arrs = [_str2arr(image['data']) for image in stored]
+
+        if not _equal_sizes(arrs, key):
+            return False
+
+        errors = list(_compare_images(arrs))
+
+        # check if we have enough errors to compare
+        can_test = _can_test(errors, key, is_number=True)
+
+        if can_test:
+            return self._compare_numeric(errors, key)
+        else:
+            return True
+
+    def _compare_numeric(self, stored, key):
         # ignore the last one since that's the same as the value
         stdev = statistics.stdev(stored[:-1])
         mean = statistics.mean(stored[:-1])
@@ -98,7 +185,7 @@ class History:
             click.secho(
                 f"Testing {key!r} - FAIL! "
                 "Value is too low "
-                f"({value}), expected one "
+                f"({value:.2f}), expected one "
                 f"between {low:.2f} and {high:.2f}",
                 fg='red')
         elif value > high:
@@ -106,7 +193,7 @@ class History:
             click.secho(
                 f"Testing {key!r} - FAIL! "
                 "Value is too high "
-                f"({value}), expected one "
+                f"({value:.2f}), expected one "
                 f"between {low:.2f} and {high:.2f}",
                 fg='red')
         else:
@@ -119,6 +206,38 @@ def _load_json(path):
     return json.loads(Path(path).read_text())
 
 
+class Image:
+
+    def __init__(self, data):
+        self._data = data
+
+    def to_json_serializable(self):
+        return dict(mimetype='image/png', data=self._data)
+
+
+# modified from sklearn-evaluation's source code
+def _parse_output(output, literal_eval):
+    if 'image/png' in output:
+        return Image(output['image/png'])
+    elif 'text/plain' in output:
+        out = output['text/plain']
+        return out if not literal_eval else _safe_literal_eval(out,
+                                                               to_df=False)
+
+
+def _extract_data(path):
+    nb = NotebookIntrospector(path)
+    data = {
+        k: _parse_output(
+            v,
+            literal_eval=True,
+        )
+        for k, v in nb.tag2output_raw.items()
+    }
+
+    return data
+
+
 def main(path_to_notebook: str, run: bool = False):
     if run:
         click.echo('Running notebook...')
@@ -128,21 +247,20 @@ def main(path_to_notebook: str, run: bool = False):
 
     path_to_history = Path(path_to_notebook).with_suffix('.json')
 
-    nb = NotebookIntrospector(path_to_notebook)
-    data = nb.to_json_serializable()
+    data = _extract_data(path_to_notebook)
 
     history = History(path_to_history)
-    history.append(data)
 
     success = True
 
-    # TODO: compare and add then record (add record even if compare fails)
-    for key in data.keys():
-        if not history.compare(key):
+    for key, value in data.items():
+        if hasattr(value, 'to_json_serializable'):
+            value = value.to_json_serializable()
+
+        if not history.compare(key, value):
             success = False
 
-    # NOTE: if the test fails, we should not add the last observation to
-    # history, perhaps add a nother command "nbsnapshot" that only adds the
-    # current values to the history without testing?
     if not success:
         raise SnapshotTestFailure('Some tests failed.')
+    else:
+        history.append(data)

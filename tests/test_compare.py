@@ -46,12 +46,12 @@ def test_compare_appends_to_history(tmp_empty):
     [
         '100 + 100',
         ("Testing 'first' - FAIL! Value is too high "
-         "(200), expected one between 2.00 and 2.00")
+         "(200.00), expected one between 2.00 and 2.00")
     ],
     [
         '-100 - 100',
         ("Testing 'first' - FAIL! Value is too low "
-         "(-200), expected one between 2.00 and 2.00")
+         "(-200.00), expected one between 2.00 and 2.00")
     ],
 ])
 def test_compare_raises_error_if_deviates(tmp_empty, source, error, capsys):
@@ -75,6 +75,8 @@ def test_compare_raises_error_if_deviates(tmp_empty, source, error, capsys):
     captured = capsys.readouterr()
     assert error in captured.out
     assert 'Some tests failed.' == str(excinfo.value)
+    # should not add the new record to the history
+    assert len(_load_json('nb.json')) == 3
 
 
 @pytest.mark.parametrize('cells, expected', [
