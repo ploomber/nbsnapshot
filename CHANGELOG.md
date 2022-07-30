@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 0.2.1dev
+
 ## 0.2 (2022-07-30)
 * Adds support for testing images
 
