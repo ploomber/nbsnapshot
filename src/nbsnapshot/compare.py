@@ -51,7 +51,7 @@ def _compare_images(arrs):
         yield _mean_squared_error(image0, image1)
 
 
-def _can_test(stored, key, is_number):
+def _can_test(stored, key, is_number, echo=True):
     minimum = 3 if is_number else 2
     # we need at least two observations to compute standard deviation
     # plus the observation to compare
@@ -60,13 +60,14 @@ def _can_test(stored, key, is_number):
     # TODO: add a CLI argument to control the minimum observations
     # to start testing
     if len_ < minimum:
-        needed = (minimum - 1) - len_
-        if needed:
-            click.echo(f'Added {key!r} to history, {needed} more '
-                       'needed for testing...')
-        else:
-            click.echo(f'Added {key!r} to history, next call '
-                       'will start testing...')
+        if echo:
+            needed = (minimum - 1) - len_
+            if needed:
+                click.echo(f'Added {key!r} to history, {needed} more '
+                           'needed for testing...')
+            else:
+                click.echo(f'Added {key!r} to history, next call '
+                           'will start testing...')
 
         # skip the rest of the function
         return False
@@ -155,18 +156,21 @@ class History:
 
     def _compare_image(self, stored, key):
         arrs = [_str2arr(image['data']) for image in stored]
+        equal_sizes = _equal_sizes(arrs, key)
 
-        if not _equal_sizes(arrs, key):
+        if not equal_sizes:
             return False
 
         errors = list(_compare_images(arrs))
 
         # check if we have enough errors to compare
-        can_test = _can_test(errors, key, is_number=True)
+        can_test = _can_test(errors, key, is_number=True, echo=False)
 
         if can_test:
             return self._compare_numeric(errors, key)
         else:
+            # this means we only checked image size
+            click.secho(f'Testing [image size]: {key!r} - OK!', fg='green')
             return True
 
     def _compare_numeric(self, stored, key):
