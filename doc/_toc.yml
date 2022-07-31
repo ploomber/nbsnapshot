@@ -1,0 +1,12 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+chapters:
+- file: tutorial
+- file: tutorial-image
+- file: use-case-nbs
+- file: use-case-ml
+- file: use-case-data
+- file: github-actions
