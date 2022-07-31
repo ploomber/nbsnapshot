@@ -13,11 +13,15 @@ CLI for doing snapshot testing on Jupyter notebooks. [Blog post here.](https://p
 pip install nbsnapshot
 ```
 
-## Example
+## Documentation
 
-See [examples/example.ipynb](examples/example.ipynb)
+[Click here to see the documentation](https://nbsnapshot.readthedocs.io)
 
-For an example project using nbsnapshot and GitHub Actions, [see here.](https://github.com/ploomber/notebooks-ci)
+## Use Cases
+
+* [Testing example notebooks](https://nbsnapshot.readthedocs.io/en/latest/use-case-nbs.html)
+* [Machine Learning model re-training](https://nbsnapshot.readthedocs.io/en/latest/use-case-ml.html)
+* [Data ingestion monitoring](https://nbsnapshot.readthedocs.io/en/latest/use-case-data.html)
 
 ## Usage
 
