@@ -8,6 +8,9 @@ build:
   jobs:
     pre_build:
       - "jupyter-book config sphinx doc/"
+    post_build:
+      - echo "Notebook logs"
+      - cat doc/_build/html/reports/*.log
 
 python:
   install:
