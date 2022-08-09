@@ -6,7 +6,7 @@ jupytext:
     format_version: 0.13
     jupytext_version: 1.14.0
 kernelspec:
-  display_name: Python 3.9.13 64-bit
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -18,19 +18,6 @@ This tutorial will show you how to use `nbsnapshot`.
 To indicate that you want `nbsnapshot` to test a cell's output, you need to add a tag to the cell with any name ([see here](https://jupyterbook.org/en/stable/content/metadata.html) to learn how to add tags to cells). Then, when testing a notebook, `nbsnapshot` will create a JSON file and append the results.
 
 Let's create a fake history to simulate that we ran a notebook 10 times. The fake cell will create random values drawn from a normal distribution centered at `10`:
-
-```{code-cell} ipython3
-:tags: ["remove-cell"]
-import tempfile, os, shutil, atexit
-
-tmp = tempfile.mkdtemp()
-os.chdir(tmp)
-
-@atexit.register
-def delete_tmp():
-    shutil.rmtree(tmp)
-```
-
 
 ```{code-cell} ipython3
 import json
@@ -58,7 +45,6 @@ def plot_history():
 # download example notebook
 _ = urllib.request.urlretrieve("https://raw.githubusercontent.com/ploomber/nbsnapshot/main/examples/constant.ipynb", "constant.ipynb")
 ```
-
 
 ```{code-cell} ipython3
 create_fake_history(mean=10)

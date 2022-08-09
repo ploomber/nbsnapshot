@@ -18,18 +18,6 @@ You can use `nbsnapshot` to monitor ML re-training jobs, to get alerted when the
 Let's download a notebook that train a classifier:
 
 ```{code-cell} ipython3
-:tags: ["remove-cell"]
-import tempfile, os, shutil, atexit
-
-tmp = tempfile.mkdtemp()
-os.chdir(tmp)
-
-@atexit.register
-def delete_tmp():
-    shutil.rmtree(tmp)
-```
-
-```{code-cell} ipython3
 import urllib.request
 
 import pandas as pd
@@ -44,7 +32,7 @@ _ = urllib.request.urlretrieve("https://raw.githubusercontent.com/ploomber/nbsna
 Let's run  the notebook 10 times:
 
 ```{code-cell} ipython3
-:tags: ["hide-output"]
+:tags: [hide-output]
 
 for i in range(10):
     print(f'**Iteration {i}**')
