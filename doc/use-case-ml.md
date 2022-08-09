@@ -18,6 +18,7 @@ You can use `nbsnapshot` to monitor ML re-training jobs, to get alerted when the
 Let's download a notebook that train a classifier:
 
 ```{code-cell} ipython3
+from pathlib import Path
 import urllib.request
 
 import pandas as pd
@@ -27,6 +28,12 @@ from nbsnapshot.exceptions import SnapshotTestFailure
 
 # download example notebook
 _ = urllib.request.urlretrieve("https://raw.githubusercontent.com/ploomber/nbsnapshot/main/examples/ml-classifier.ipynb", "ml-classifier.ipynb")
+
+# delete history, if it exists
+history = Path("ml-classifier.ipynb")
+
+if history.exists():
+    history.unlink()
 ```
 
 Let's run  the notebook 10 times:

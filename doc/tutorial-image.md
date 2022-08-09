@@ -16,6 +16,7 @@ kernelspec:
 Beginning in `nbsnapshot` 0.2, testing images is supported. Let's download a notebook that plots an image using matplotlib:
 
 ```{code-cell} ipython3
+from pathlib import Path
 import urllib.request
 
 
@@ -24,6 +25,12 @@ from nbsnapshot.exceptions import SnapshotTestFailure
 
 # download example notebook
 _ = urllib.request.urlretrieve("https://raw.githubusercontent.com/ploomber/nbsnapshot/main/examples/image.ipynb", "image.ipynb")
+
+# delete history, if it exists
+history = Path("image.ipynb")
+
+if history.exists():
+    history.unlink()
 ```
 
 Run it once to generate the base image:
