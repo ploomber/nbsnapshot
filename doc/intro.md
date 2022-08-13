@@ -34,12 +34,18 @@ Download a notebook:
 ```{code-cell} ipython3
 import urllib.request
 from pathlib import Path
+```
 
+
+```{code-cell} ipython3
 from nbsnapshot import compare
+```
 
+```{code-cell} ipython3
 # download example notebook
 _ = urllib.request.urlretrieve("https://raw.githubusercontent.com/ploomber/nbsnapshot/main/examples/normal.ipynb", "example.ipynb")
 ```
+
 
 Run it a few times (two needed to start testing):
 
