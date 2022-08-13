@@ -38,3 +38,4 @@ sphinx:
 
 execute:
   run_in_temp: true
+  timeout: 60
