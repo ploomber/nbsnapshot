@@ -36,12 +36,12 @@ if history.exists():
     history.unlink()
 ```
 
-Let's run  the notebook 10 times:
+Let's run  the notebook 5 times:
 
 ```{code-cell} ipython3
 :tags: [hide-output]
 
-for i in range(10):
+for i in range(5):
     print(f'**Iteration {i}**')
     compare.main('ml-classifier.ipynb', run=True)
 ```
