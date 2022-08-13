@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## 0.2.1dev
+* Adds optional, anonymous telemetry
 
 ## 0.2 (2022-07-30)
 * Adds support for testing images
