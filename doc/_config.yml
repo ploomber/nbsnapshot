@@ -35,3 +35,6 @@ sphinx:
   fail_on_warning: true
   config:
     execution_show_tb: true
+
+execute:
+  run_in_temp: true

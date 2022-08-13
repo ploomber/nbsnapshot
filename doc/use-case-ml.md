@@ -30,7 +30,7 @@ from nbsnapshot.exceptions import SnapshotTestFailure
 _ = urllib.request.urlretrieve("https://raw.githubusercontent.com/ploomber/nbsnapshot/main/examples/ml-classifier.ipynb", "ml-classifier.ipynb")
 
 # delete history, if it exists
-history = Path("ml-classifier.ipynb")
+history = Path("ml-classifier.json")
 
 if history.exists():
     history.unlink()

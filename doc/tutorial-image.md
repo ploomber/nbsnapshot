@@ -27,7 +27,7 @@ from nbsnapshot.exceptions import SnapshotTestFailure
 _ = urllib.request.urlretrieve("https://raw.githubusercontent.com/ploomber/nbsnapshot/main/examples/image.ipynb", "image.ipynb")
 
 # delete history, if it exists
-history = Path("image.ipynb")
+history = Path("image.json")
 
 if history.exists():
     history.unlink()
