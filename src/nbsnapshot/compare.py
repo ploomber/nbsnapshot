@@ -7,10 +7,18 @@ from collections.abc import Mapping
 
 import click
 import papermill as pm
+from ploomber_core.telemetry.telemetry import Telemetry
 from sklearn_evaluation import NotebookIntrospector
 from sklearn_evaluation.nb.NotebookIntrospector import _safe_literal_eval
 
+from nbsnapshot import __version__
 from nbsnapshot.exceptions import SnapshotTestFailure
+
+telemetry = Telemetry(
+    api_key="phc_O4Tj0iLrsdabmcoLsCL6y3zTYg9EDLDZsLPclJt0C2e",
+    package_name="nbsnapshot",
+    version=__version__,
+)
 
 
 def _remove_non_supported_types(record):
@@ -242,6 +250,7 @@ def _extract_data(path):
     return data
 
 
+@telemetry.log_call('compare-main')
 def main(path_to_notebook: str, run: bool = False):
     if run:
         click.echo('Running notebook...')
