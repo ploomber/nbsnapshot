@@ -15,7 +15,7 @@ from nbsnapshot import __version__
 from nbsnapshot.exceptions import SnapshotTestFailure
 
 telemetry = Telemetry(
-    api_key="phc_O4Tj0iLrsdabmcoLsCL6y3zTYg9EDLDZsLPclJt0C2e",
+    api_key="phc_P9SpSeypyPwxrMdFn2edOOEooQioF2axppyEeDwtMSP",
     package_name="nbsnapshot",
     version=__version__,
 )
