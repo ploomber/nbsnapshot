@@ -1,5 +1,8 @@
 # nbsnapshot
 
+> [!TIP]
+> Deploy AI apps for free on [Ploomber Cloud!](https://ploomber.io/?utm_medium=github&utm_source=nbsnapshot)
+
 CLI for doing snapshot testing on Jupyter notebooks. [Blog post here.](https://ploomber.io/blog/snapshot-testing/)
 
 ![header](header.png)
